@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Workshop Registration</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function handleRegistration(event) {
+            event.preventDefault();
+        
+            // Collect form data
+            const form = event.target;
+            const formData = {
+                fullName: form.fullName.value,
+                email: form.email.value,
+                phone: form.phone.value,
+                branch: form.branch.value, // New field
+                experience: form.experience.value,
+            };
+        
+            // Send form data to the backend
+            fetch('http://127.0.0.1:5000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to register");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Backend Response:", data);
+        
+                    // Clear form data
+                    form.reset();
+        
+                    // Show success message
+                    showSuccessMessage(data.message);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Failed to register. Please try again later.");
+                });
+        }
+        
+        // Function to display the success message
+        function showSuccessMessage(message) {
+            const successMessage = document.createElement("div");
+            successMessage.textContent = message;
+            successMessage.style.position = "fixed";
+            successMessage.style.top = "50%";
+            successMessage.style.left = "50%";
+            successMessage.style.transform = "translate(-50%, -50%)";
+            successMessage.style.padding = "20px 40px";
+            successMessage.style.background = "#ffffff";
+            successMessage.style.border = "2px solid #28a745";
+            successMessage.style.borderRadius = "10px";
+            successMessage.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+            successMessage.style.fontSize = "18px";
+            successMessage.style.fontWeight = "bold";
+            successMessage.style.color = "#28a745";
+            successMessage.style.opacity = "0";
+            successMessage.style.transition = "opacity 0.5s ease-in-out";
+            document.body.appendChild(successMessage);
+        
+            setTimeout(() => {
+                successMessage.style.opacity = "1";
+            }, 100);
+        
+            // Fade out the message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.opacity = "0";
+                setTimeout(() => successMessage.remove(), 500);
+            }, 3000);
+        }
+        
+        
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+        
+    </script>
+</head>
+<body>
+    <!-- <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button> -->
+    <div class="registration-container">
+        <h1>Register for the Android Workshop</h1>
+        <form class="registration-form" onsubmit="handleRegistration(event)" method="post">
+            <div class="form-section">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-section">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-section">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+            </div>
+
+            <div class="form-section">
+                <label for="branch">Branch</label>
+                <select id="branch" name="workshop" required>
+                    <option value="">-- Branch --</option>
+                    <option value="cse">CSE</option>
+                    <option value="aiml">AIML</option>
+                    <option value="cic">CIC</option>
+                    <option value="it">IT</option>
+                    <option value="aids">AIDS</option>
+                    <option value="csbs">CSBS</option>
+                    <option value="csd">CSD</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label for="experience">Experience Level</label>
+                <select id="experience" name="experience" required>
+                    <option value="">-- Select your experience level --</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+
+            <!-- <div class="form-section">
+                <label for="workshop">Preferred Workshop</label>
+                <select id="workshop" name="workshop" required>
+                    <option value="">-- Select a workshop --</option>
+                    <option value="android_basics">Android Basics</option>
+                    <option value="flutter">Flutter for Android</option>
+                    <option value="ml_android">Machine Learning on Android</option>
+                </select>
+            </div> -->
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>
